@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>อิ่มเพรส (IMM PRESS) – Food Quest v2</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Mali:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ---------- THEMES ---------- */
+:root{
+  --bg1:#ede7ff; --bg2:#d6c9ff;
+  --cab:#7b61d6; --cab2:#5b43b5; --line:#3b2a86;
+  --accent:#ffd84a; --on-accent:#3b2a86; --accent2:#8b6ee8;
+  --panel:#fff8d6; --ink:#3b2a86;
+  --screen:#f4efff; --screen2:#ffe98a; --st:#3b2a86;
+  --jb:6.5rem; --jk:2.8rem;
+}
+body.t-halloween{
+  --bg1:#2a1640; --bg2:#120a22;
+  --cab:#ff8a1f; --cab2:#b9540a; --line:#1d0f33;
+  --accent:#ff8a1f; --on-accent:#220f3a; --accent2:#7b4bd1;
+  --panel:#ffe7c2; --ink:#3a1c5e;
+  --screen:#2b1747; --screen2:#4a2a7a; --st:#ffe7c2;
+}
+body.t-christmas{
+  --bg1:#fff1f1; --bg2:#d3ecdc;
+  --cab:#c8283a; --cab2:#8f1626; --line:#5e0f1b;
+  --accent:#2f9e5b; --on-accent:#ffffff; --accent2:#c8283a;
+  --panel:#fffaf0; --ink:#7a1424;
+  --screen:#f6fff8; --screen2:#ffe3e3; --st:#7a1424;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{font-size:clamp(12px,2.1vmin + .25vw,19px)}
+body{margin:0;font-family:'Mali','Fredoka',system-ui,sans-serif;color:var(--ink);
+  background:linear-gradient(160deg,var(--bg1),var(--bg2));min-height:100dvh;overflow:hidden;transition:background .5s}
+body.t-halloween::before{content:"";position:fixed;right:8%;top:5%;width:12vmin;height:12vmin;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,#fff3b0,#ffd36b);box-shadow:0 0 60px 20px rgba(255,211,107,.35);pointer-events:none}
+body.t-christmas::after{content:"";position:fixed;left:0;right:0;bottom:0;height:12vh;
+  background:linear-gradient(0deg,#fff,rgba(255,255,255,0));pointer-events:none}
+#deco span{position:absolute;opacity:.55;animation:drift linear infinite;will-change:transform}
+#deco span.fall{animation-name:fall}
+@keyframes drift{from{transform:translateY(110vh) rotate(0)}to{transform:translateY(-20vh) rotate(360deg)}}
+@keyframes fall{from{transform:translateY(-15vh) rotate(0)}to{transform:translateY(110vh) rotate(360deg)}}
+
+/* ---------- CABINET ---------- */
+.cabinet{padding:max(.5rem,env(safe-area-inset-top)) .6rem max(.5rem,env(safe-area-inset-bottom))}
+.marquee{display:flex;align-items:center;justify-content:center;gap:.6rem;
+  background:linear-gradient(180deg,var(--accent),color-mix(in srgb,var(--accent) 70%,#000));color:var(--on-accent);
+  border:3px solid var(--line);border-radius:1.1rem 1.1rem .4rem .4rem;padding:.25rem 1rem;
+  font-family:'Fredoka',sans-serif;font-weight:700;letter-spacing:.08em;font-size:1.25rem;box-shadow:0 4px 0 var(--line)}
+.marquee small{font-family:'Mali';font-weight:600;letter-spacing:0;font-size:.7rem;opacity:.85}
+.crt{border:.5rem solid var(--cab2);border-radius:1.3rem;background:var(--screen);position:relative;overflow:hidden;
+  box-shadow:inset 0 0 40px rgba(0,0,0,.18),0 0 0 3px var(--line),0 8px 0 3px color-mix(in srgb,var(--line) 70%,transparent)}
+.crt::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:5;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.035) 0 2px,transparent 2px 4px);border-radius:.8rem}
+#screen{position:absolute;inset:0;overflow-y:auto;padding:.6rem .8rem;color:var(--st);
+  background:radial-gradient(circle at 20% 15%,var(--screen2) 0,transparent 45%),var(--screen)}
+#screen.game{padding:0;overflow:hidden}
+#screen.out{opacity:0;transform:translateY(8px) scale(.985);transition:.18s}
+#screen.in{animation:slideIn .38s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes slideIn{from{opacity:0;transform:translateX(24px) scale(.98)}to{opacity:1;transform:none}}
+.controls{display:flex;align-items:center;justify-content:space-between;gap:.6rem;
+  background:linear-gradient(180deg,var(--cab),var(--cab2));border:3px solid var(--line);border-radius:.4rem .4rem 1.1rem 1.1rem;
+  padding:.3rem .8rem;box-shadow:0 4px 0 var(--line)}
+.joy-deco{width:2rem;height:2rem;position:relative}
+.joy-deco::before{content:"";position:absolute;left:50%;bottom:0;width:.35rem;height:1.1rem;background:#ddd;transform:translateX(-50%);border:2px solid var(--line);border-radius:3px}
+.joy-deco::after{content:"";position:absolute;left:50%;top:0;width:1.1rem;height:1.1rem;background:var(--accent);border:2px solid var(--line);border-radius:50%;transform:translateX(-50%)}
+.cbtn{width:2.4rem;height:2.4rem;border-radius:50%;border:3px solid var(--line);background:var(--panel);color:var(--ink);font-size:1.05rem;
+  box-shadow:0 3px 0 var(--line);cursor:pointer;transition:transform .08s,box-shadow .08s}
+.cbtn:active:not(:disabled){transform:translateY(3px);box-shadow:none}
+.cbtn:disabled{opacity:.35;cursor:not-allowed}
+.progress{color:#fff;font-family:'Fredoka';font-size:.8rem;text-align:center;min-width:6rem;text-shadow:0 1px 0 rgba(0,0,0,.35)}
+@media (max-height:480px){
+  :root{--jb:5rem;--jk:2.2rem}
+  .marquee{font-size:.95rem;padding:.1rem .6rem}.marquee small{display:none}
+  .cbtn{width:1.9rem;height:1.9rem;font-size:.85rem}.joy-deco{display:none}.controls{padding:.15rem .6rem}.crt{border-width:.35rem}
+}
+
+/* ---------- UI PARTS ---------- */
+.btn{font-family:'Fredoka','Mali',sans-serif;font-weight:700;border:3px solid var(--line);border-radius:.9rem;padding:.45rem 1rem;cursor:pointer;
+  box-shadow:0 4px 0 var(--line);transition:transform .08s,box-shadow .08s;font-size:.95rem;letter-spacing:.03em}
+.btn:hover{filter:brightness(1.06)}
+.btn:active{transform:translateY(4px);box-shadow:0 0 0 var(--line)}
+.btn-primary{background:var(--accent);color:var(--on-accent)}
+.btn-sec{background:var(--accent2);color:#fff}
+.btn-ghost{background:var(--panel);color:var(--ink)}
+.btn.big{font-size:1.45rem;padding:.55rem 2rem;animation:pulse 1.4s infinite}
+@keyframes pulse{50%{transform:scale(1.05)}}
+.card{background:var(--panel);color:var(--ink);border:3px solid var(--line);border-radius:1.1rem;box-shadow:0 4px 0 var(--line)}
+.center{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.6rem}
+.stitle{font-family:'Fredoka','Mali';font-weight:700;font-size:1.3rem;text-align:center;color:var(--st)}
+.ssub{font-size:.85rem;text-align:center;opacity:.85}
+
+/* start */
+.logo{font-family:'Fredoka';font-weight:700;font-size:clamp(2.2rem,9vmin,4.4rem);line-height:.95;text-align:center;margin:0;
+  color:var(--accent);-webkit-text-stroke:3px var(--line);paint-order:stroke fill;text-shadow:0 5px 0 var(--line);letter-spacing:.03em}
+.logo-sub{font-family:'Fredoka','Mali';font-weight:700;text-align:center;font-size:1rem;background:var(--accent2);color:#fff;
+  border:3px solid var(--line);border-radius:999px;padding:.1rem 1rem;display:inline-block;box-shadow:0 3px 0 var(--line)}
+.tag{margin:.2rem 0 0;text-align:center;font-weight:600;font-size:.9rem}
+.start-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:1rem;width:100%}
+.btn-col{display:flex;flex-direction:column;align-items:center;gap:.55rem}
+.btn-col .row,.theme-row{display:flex;flex-wrap:wrap;gap:.45rem;justify-content:center}
+.theme-row .btn{font-size:.78rem;padding:.3rem .7rem}
+.theme-row .btn.active{background:var(--accent);color:var(--on-accent);transform:translateY(2px);box-shadow:0 2px 0 var(--line)}
+.char{cursor:pointer;padding:.4rem .9rem .5rem;text-align:center;transition:transform .15s}
+.char:hover{transform:translateY(-4px)}
+.char.sel{outline:4px solid var(--accent);outline-offset:2px;animation:bob 1.2s infinite}
+.char b{display:block;font-size:.85rem}
+.char small{font-size:.7rem;opacity:.75}
+@keyframes bob{50%{transform:translateY(-6px)}}
+.avatar{position:relative;display:inline-block;font-size:3.2rem;line-height:1}
+.avatar.sm{font-size:2.3rem;flex:none}
+.avatar .acc{position:absolute;left:50%;top:-.35em;transform:translateX(-50%) rotate(-12deg);font-style:normal;font-size:.5em}
+
+/* narrator bubble */
+.narr{display:flex;align-items:center;gap:.6rem;width:100%;max-width:46rem;margin:0 auto}
+.bubble{position:relative;background:var(--panel);color:var(--ink);border:3px solid var(--line);border-radius:1rem;padding:.5rem .8rem;font-weight:600;font-size:.95rem;line-height:1.35;box-shadow:0 3px 0 var(--line)}
+.bubble::before{content:"";position:absolute;left:-.6rem;top:50%;margin-top:-.4rem;border:.4rem solid transparent;border-right-color:var(--line);border-left:0}
+
+/* profile */
+.profile{display:grid;grid-template-columns:minmax(8rem,.4fr) 1fr;gap:.8rem;width:100%;max-width:52rem;margin:0 auto}
+@media (max-width:620px){.profile{grid-template-columns:1fr}}
+.spicy-box{background:var(--cab2);color:#fff;border:3px solid var(--line);border-radius:1rem;padding:.6rem;text-align:center;box-shadow:0 4px 0 var(--line);align-self:start}
+.spicy-box .lbl{font-family:'Fredoka';font-weight:700;letter-spacing:.15em}
+.chilies{display:grid;grid-template-columns:repeat(4,1fr);gap:.2rem;margin:.4rem 0}
+.chili{background:none;border:none;font-size:1.6rem;cursor:pointer;filter:grayscale(1);opacity:.35;transition:.15s}
+.chili.on{filter:none;opacity:1;transform:scale(1.1)}
+.chili-x{background:none;border:2px solid #fff;color:#fff;border-radius:50%;width:1.7rem;height:1.7rem;cursor:pointer;font-weight:700}
+.flabel{display:block;font-weight:700;font-size:.85rem;margin:.1rem 0 .2rem}
+.field{width:100%;border:3px solid var(--line);border-radius:.8rem;padding:.45rem .7rem;font-family:'Mali';font-size:1rem;background:#fff;color:#3b2a86;outline:none}
+.field:focus{box-shadow:0 0 0 3px var(--accent)}
+textarea.field{resize:vertical;min-height:4.2rem;max-height:9rem;line-height:1.4}
+.fhint{font-size:.72rem;opacity:.75;margin:.2rem 0 0}
+.rbtns{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin-top:.5rem}
+
+/* mood */
+.moods{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem;width:100%;max-width:50rem}
+@media (max-width:560px){.moods{grid-template-columns:repeat(2,1fr)}}
+.mood{cursor:pointer;padding:.6rem .3rem;text-align:center;transition:.15s;font-family:'Mali'}
+.mood:hover{transform:translateY(-5px) rotate(-1.5deg)}
+.mood.sel{outline:4px solid var(--accent);outline-offset:2px}
+.mood .e{font-size:2.6rem;display:block;line-height:1.1}
+.mood b{display:block;font-size:.95rem}
+.mood small{font-size:.7rem;opacity:.8;display:block;min-height:1em}
+.mood i{font-style:normal;display:inline-block;margin-top:.2rem;background:var(--accent2);color:#fff;border-radius:999px;font-size:.65rem;padding:0 .5rem}
+
+/* ---------- GAME STAGE (canvas) ---------- */
+.badge{font-family:'Fredoka';font-weight:700;background:var(--cab2);color:#fff;border:3px solid var(--line);border-radius:.7rem;padding:.1rem .7rem;font-size:.85rem;white-space:nowrap}
+.qstage{position:absolute;inset:0;touch-action:none;user-select:none;-webkit-user-select:none;background:#000}
+#cv{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;touch-action:none}
+.qhud{position:absolute;left:.5rem;right:.5rem;top:.4rem;display:flex;gap:.4rem;align-items:center;pointer-events:none;z-index:3}
+.hbub{background:rgba(255,255,255,.93);color:var(--ink);border:3px solid var(--line);border-radius:.9rem;padding:.15rem .6rem;font-weight:700;font-size:.82rem;
+  display:flex;align-items:center;gap:.4rem;line-height:1.25;box-shadow:0 3px 0 var(--line)}
+.hbub .avatar.sm{font-size:1.6rem}
+.hbar{position:absolute;left:0;right:0;top:0;height:.3rem;background:rgba(255,255,255,.35);z-index:3}
+.hbar i{display:block;height:100%;background:var(--accent);transition:width .4s}
+#joy{position:absolute;left:.8rem;bottom:.8rem;width:var(--jb);height:var(--jb);border-radius:50%;z-index:4;touch-action:none;
+  background:radial-gradient(circle,rgba(255,255,255,.55),rgba(255,255,255,.25));border:3px solid var(--line);box-shadow:0 4px 0 var(--line)}
+#knob{position:absolute;left:50%;top:50%;width:var(--jk);height:var(--jk);margin:calc(var(--jk)/-2) 0 0 calc(var(--jk)/-2);border-radius:50%;
+  background:var(--accent);border:3px solid var(--line);box-shadow:0 3px 0 var(--line);pointer-events:none}
+#act{position:absolute;right:.8rem;bottom:.8rem;z-index:4;font-size:1.05rem;max-width:55%;animation:pop .25s}
+#act[hidden],#reveal[hidden]{display:none}
+#reveal{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:6;pointer-events:none;background:rgba(0,0,0,.25)}
+.revcard{padding:.7rem 1.4rem;text-align:center;animation:pop .35s;max-width:80%}
+.revcard .ri{font-size:3rem;display:block;line-height:1.1}
+.revcard b{display:block;font-size:1.05rem}
+.revcard small{font-size:.8rem;opacity:.85}
+.toast{position:absolute;left:50%;bottom:.8rem;transform:translateX(-50%);z-index:3;background:rgba(0,0,0,.6);color:#fff;border-radius:999px;padding:.2rem .8rem;
+  font-size:.72rem;font-weight:600;pointer-events:none;text-align:center;max-width:46%;animation:toastOut 6s forwards}
+@keyframes toastOut{0%,80%{opacity:1}100%{opacity:0;visibility:hidden}}
+
+/* loading + result */
+.runner{font-size:3rem;animation:run .5s infinite alternate}
+@keyframes run{from{transform:translateX(-30px) rotate(-6deg)}to{transform:translateX(30px) rotate(6deg)}}
+.result{display:grid;grid-template-columns:1fr 1.25fr;gap:.8rem;width:100%;max-width:56rem;margin:0 auto;align-items:stretch;min-height:100%}
+@media (max-width:640px){.result{grid-template-columns:1fr}}
+.exit{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4rem;padding:.7rem;text-align:center;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--accent2) 30%,#fff),#fff);overflow:hidden}
+.exit .sign{font-family:'Fredoka';font-weight:700;background:#22a35a;color:#fff;border:3px solid var(--line);border-radius:.5rem;padding:0 .8rem;letter-spacing:.2em;font-size:.9rem}
+.exit .mom{font-size:3.8rem;line-height:1;animation:bob 1.6s infinite}
+.exit .door{font-size:2.2rem;position:absolute;right:.6rem;top:.6rem}
+.plate{font-size:3.6rem;background:#fff;border:3px solid var(--line);border-radius:50%;width:6rem;height:6rem;display:flex;align-items:center;justify-content:center;margin:0 auto;box-shadow:inset 0 -6px 0 rgba(0,0,0,.08),0 4px 0 var(--line);animation:pop .6s}
+@keyframes pop{from{transform:scale(0) rotate(-40deg)}to{transform:none}}
+.tags{display:flex;flex-wrap:wrap;gap:.3rem;justify-content:center;margin:.3rem 0}
+.tag-pill{background:var(--accent2);color:#fff;border:2px solid var(--line);border-radius:999px;padding:0 .55rem;font-size:.72rem;font-weight:700}
+.tag-pill.y{background:var(--accent);color:var(--on-accent)}
+.alt{font-size:.78rem;opacity:.9;text-align:center}
+.msg{margin-top:.4rem;font-weight:700;text-align:center;animation:pop .4s}
+
+/* modal */
+#modal{position:fixed;inset:0;background:rgba(20,10,40,.6);z-index:50;display:none;align-items:center;justify-content:center;padding:1rem}
+#modal.show{display:flex}
+.mbox{max-width:34rem;width:100%;max-height:88dvh;overflow:auto;padding:1rem 1.1rem;animation:pop .3s}
+.mbox h2{font-family:'Fredoka';margin:0 0 .4rem;font-size:1.3rem}
+.mbox li{margin:.25rem 0;font-size:.9rem}
+.tog{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin:.4rem 0;font-weight:600}
+#rot{position:fixed;left:50%;top:.4rem;transform:translateX(-50%);z-index:40;background:var(--accent);color:var(--on-accent);border:3px solid var(--line);border-radius:999px;
+  padding:.1rem .8rem;font-size:.75rem;font-weight:700;display:none;gap:.4rem;align-items:center}
+@media (orientation:portrait){#rot.show{display:flex}}
+.confetti{position:fixed;top:-2rem;z-index:60;font-size:1.6rem;pointer-events:none;animation:cf 2.4s ease-in forwards}
+@keyframes cf{to{transform:translateY(110vh) rotate(540deg);opacity:.9}}
+@media (prefers-reduced-motion:reduce){.btn.big,.char.sel,.exit .mom,.runner{animation:none!important}}
+</style>
+</head>
+<body class="t-normal">
+<div id="deco" class="fixed inset-0 overflow-hidden pointer-events-none z-0"></div>
+<div id="rot"><span>📱↻ หมุนจอเป็นแนวนอนเพื่อประสบการณ์ที่ดีที่สุด</span><button id="rotx" aria-label="ปิด">✕</button></div>
+
+<main class="cabinet relative z-10 flex flex-col gap-2 mx-auto" style="height:100dvh;max-width:1200px">
+  <header class="marquee"><span id="mq1">✨</span><span>อิ่มเพรส · IMM PRESS</span><small>Food Quest</small><span id="mq2">✨</span></header>
+  <section class="crt flex-1 min-h-0"><div id="screen"></div></section>
+  <footer class="controls">
+    <div class="flex items-center gap-2">
+      <button class="cbtn" id="bBack" title="ย้อนกลับ" aria-label="ย้อนกลับ">◀</button>
+      <button class="cbtn" id="bFwd" title="ถัดไป" aria-label="ถัดไป">▶</button>
+    </div>
+    <div class="joy-deco"></div>
+    <div class="progress" id="prog">INSERT COIN 🪙</div>
+    <div class="joy-deco"></div>
+    <button class="cbtn" id="bTts" title="อ่านออกเสียง" aria-label="อ่านออกเสียง">🔊</button>
+  </footer>
+</main>
+
+<div id="modal"><div class="card mbox" id="mbox"></div></div>
+
+<script>
+/* =====================================================================
+   🎨 ASSET CONFIG — ใส่รูปของคุณเองที่นี่ (ปล่อย '' = ใช้ภาพวาด/อีโมจิในตัวเกม)
+   ---------------------------------------------------------------------
+   • ใส่ได้ทั้ง URL (https://...), path ในโฟลเดอร์เดียวกับไฟล์นี้ (./img/bunny.png)
+     หรือ Data URI (data:image/png;base64,...) ถ้าอยากให้เป็นไฟล์เดียวจบ
+   • แนะนำไฟล์ PNG พื้นหลังโปร่งใสสำหรับตัวละคร/วัตถุ
+   • ถ้ารูปโหลดไม่ขึ้น เกมจะกลับไปใช้ภาพสำรองให้เองโดยอัตโนมัติ
+   ===================================================================== */
+
+// 1) สไปรต์ตัวละคร (ภาพเดียวหันหน้าไปทางขวา เกมจะพลิกซ้าย-ขวาให้เอง)
+//    แนะนำขนาด ~256x256 px โปร่งใส
+const characterSpriteUrl = {
+  bunny: '',   // ← ใส่รูปกระต่าย  เช่น './img/bunny.png'
+  cat:   ''    // ← ใส่รูปแมว     เช่น './img/cat.png'
+};
+//    ถ้าอยากได้ท่าเดิน: ใช้ภาพแถบแนวนอน (sprite strip) แล้วบอกจำนวนเฟรม เช่น 4
+//    (เฟรมกว้างเท่ากัน เรียงซ้าย→ขวา) ถ้าเป็นภาพเดียวให้ใส่ 1
+const characterSpriteFrames = 1;
+const characterSpriteSize = 72;   // ขนาดตัวละครบนฉาก (หน่วยพิกเซลของฉาก 800x450)
+
+// 2) ภาพฉากหลัง ตามธีม (แนะนำ 1600x900 อัตราส่วน 16:9)
+const mapBgUrl = {
+  normal:    '',  // ← ฉากธีมปกติ
+  halloween: '',  // ← ฉากฮาโลวีน
+  christmas: ''   // ← ฉากคริสต์มาส
+};
+//    (ไม่บังคับ) ภาพฉากเฉพาะแต่ละ Stage — ถ้าใส่ จะใช้แทน mapBgUrl ของ Stage นั้น
+const stageBgUrl = { novel:'', door:'', night:'', chest:'', river:'', market:'', light:'' };
+
+// 3) ภาพประตู 4 สี (แนะนำ ~192x280 px โปร่งใส อัตราส่วนประมาณ 96:140)
+const doorTextureUrl = {
+  red:   '',  // ← ประตูสีแดง   (รสจัดจ้าน)
+  blue:  '',  // ← ประตูสีฟ้า   (อาหารทะเล)
+  green: '',  // ← ประตูสีเขียว (อาหารคลีน)
+  pink:  ''   // ← ประตูสีชมพู  (ของหวาน)
+};
+
+// 4) ภาพวัตถุอื่นๆ ในแต่ละฉาก (แนะนำ ~220x220 px โปร่งใส)
+const objectSpriteUrl = {
+  fruitNew:'',  // ผลไม้แปลกตา (Stage 1)
+  home:'',      // เส้นทางกลับบ้าน (Stage 1)
+  campfire:'',  // กองไฟ (Stage 3)
+  rest:'',      // จุดนั่งพัก (Stage 3)
+  chestA:'',    // หีบสมบัติ A (Stage 4)
+  chestB:'',    // หีบสมบัติ B (Stage 4)
+  bridge:'',    // สะพาน (Stage 5)
+  boat:'',      // เรือ (Stage 5)
+  shopSmall:'', // ร้านขนมจุกจิก (Stage 6)
+  shopBig:'',   // ร้านจานยักษ์ (Stage 6)
+  lampWarm:'',  // ไฟสีส้ม (Stage 7)
+  lampCool:''   // ไฟสีฟ้า (Stage 7)
+};
+
+// 5) ปรับแต่งการเล่น
+const PLAYER_SPEED = 210;     // ความเร็วเดิน (พิกเซล/วินาที)
+const SHOW_PARTICLES = true;  // เปิด/ปิดของลอยประกอบธีม (✨🦇❄️)
+
+/* ---------- Image loader (อย่าแก้ส่วนนี้ถ้าไม่จำเป็น) ---------- */
+const IMG={};
+function loadImg(key,url){
+  if(!url||IMG[key])return;
+  const im=new Image();IMG[key]={im,ok:false};
+  im.onload=()=>{IMG[key].ok=true};im.onerror=()=>{IMG[key].ok=false};
+  im.src=url;
+}
+const getImg=k=>{const r=IMG[k];return r&&r.ok?r.im:null};
+function registerAssets(){
+  Object.entries(characterSpriteUrl).forEach(([k,u])=>loadImg('char.'+k,u));
+  Object.entries(mapBgUrl).forEach(([k,u])=>loadImg('bg.'+k,u));
+  Object.entries(stageBgUrl).forEach(([k,u])=>loadImg('stage.'+k,u));
+  Object.entries(doorTextureUrl).forEach(([k,u])=>loadImg('door.'+k,u));
+  Object.entries(objectSpriteUrl).forEach(([k,u])=>loadImg('obj.'+k,u));
+}
+
+/* ================== DATA ================== */
+const CH={bunny:{e:'🐰',n:'บันนี่',d:'กระต่ายแฟนซี'},cat:{e:'🐱',n:'แคทตี้',d:'แมวแฟนซี'}};
+const ACC={
+  normal:{bunny:'🎀',cat:'⭐'},
+  halloween:{bunny:'🎃',cat:'🦇'},
+  christmas:{bunny:'🎄',cat:'🔔'}
+};
+const THEMES={normal:{l:'✨ Normal Theme',m:'✨',deco:['✨','⭐','🍡','🍓','🌸','🍪']},
+  halloween:{l:'🎃 Halloween Event',m:'🎃',deco:['🎃','👻','🦇','🕸️','🍬','🕯️']},
+  christmas:{l:'🎄 Christmas Event',m:'🎄',deco:['❄️','🎄','⭐','🎁','☃️','🔔'],fall:true}};
+const GROUND={halloween:['#4a2c6e','#2d1a48'],christmas:['#ffffff','#d9e7f3']};
+
+const MOODS=[
+ {id:'hungry',e:'😣',l:'หิวมาก',s:'อย่าถามเยอะ',n:4},
+ {id:'bad',e:'😤',l:'อารมณ์ไม่ดี',s:'ขอสั้นๆ ไวๆ',n:5},
+ {id:'bright',e:'🙂',l:'สดใส / เฉยๆ',s:'สบายๆ ไม่รีบ',n:6},
+ {id:'happy',e:'🥰',l:'แฮปปี้จ้า!',s:'อยากเล่นเต็มที่',n:7}
+];
+const SPICY_LBL=['ไม่ระบุความเผ็ด','🌶️ ไม่เผ็ด / นิดเดียว','🌶️🌶️ เผ็ดน้อย','🌶️🌶️🌶️ เผ็ดกลาง','🌶️🌶️🌶️🌶️ เผ็ดมาก!'];
+
+/* ฉากแต่ละ Stage: scene = สีท้องฟ้า/พื้น/ของตกแต่ง, c = วัตถุที่ให้เดินไปเลือก
+   kind: 'door' | 'chest' | 'emoji'   obj: คีย์ใน objectSpriteUrl   e: อีโมจิสำรองบนฉาก   */
+const Q=[
+ {id:'novel',text:'ระหว่างเดินทางกลับบ้าน เจอผลไม้สีสวยที่วันนี้ไม่เคยเห็นมาก่อน เดินไปหยิบมาลองไหม?',
+  scene:{kind:'park',top:'#bfe9ff',bot:'#eaf8ff',gnd:['#c8f0c0','#8fd593'],decor:[['🌳',70,185,78],['🌳',735,190,78],['🌲',400,160,58],['🌼',190,392,24],['🌷',620,405,26],['🦋',330,120,22]]},
+  c:[{i:'🍈',e:'🍈',kind:'emoji',obj:'fruitNew',tag:'ผลไม้แปลกตา ✨',glow:'#ffd84a',l:'หยิบมาลอง!',s:'แนะนำเมนูใหม่ / ต่างประเทศ',v:'new'},
+     {i:'🏡',e:'🏡',kind:'emoji',obj:'home',tag:'เดินกลับบ้านต่อ',l:'ไม่หยิบ เดินต่อ',s:'เมนูประจำร้าน / อาหารไทยเบสิก',v:'classic'}]},
+ {id:'door',text:'สำรวจไปเจอประตูลึกลับ 4 บาน… เดินไปเปิดบานที่ใช่!',
+  scene:{kind:'hall',indoor:true,top:'#d9d2ff',bot:'#efeaff',gnd:['#e8c79a','#c9a06b'],decor:[['🕯️',30,150,30],['🕯️',770,150,30]]},
+  c:[{i:'🚪',kind:'door',doorKey:'red',col:'#ef4444',tag:'ประตูสีแดง',l:'ประตูสีแดง',s:'รสชาติจัดจ้าน',v:'spicy'},
+     {i:'🚪',kind:'door',doorKey:'blue',col:'#3b82f6',tag:'ประตูสีฟ้า',l:'ประตูสีฟ้า',s:'อาหารทะเล',v:'seafood'},
+     {i:'🚪',kind:'door',doorKey:'green',col:'#22c55e',tag:'ประตูสีเขียว',l:'ประตูสีเขียว',s:'อาหารคลีน / เน้นผัก',v:'clean'},
+     {i:'🚪',kind:'door',doorKey:'pink',col:'#f472b6',tag:'ประตูสีชมพู',l:'ประตูสีชมพู',s:'ของหวาน',v:'sweet'}]},
+ {id:'night',text:'ท้องฟ้าเริ่มค่ำลงแล้ว… เดินไปที่ไหนดี?',
+  scene:{kind:'night',top:'#141a47',bot:'#3b2f7a',gnd:['#2f4a3a','#1e3226'],decor:[['🌲',60,190,70],['🌲',745,185,74],['🌲',140,170,56]]},
+  c:[{i:'🔥',e:'🔥',kind:'emoji',obj:'campfire',tag:'กองไฟ',glow:'#ff9a3c',l:'ก่อกองไฟ',s:'อาหารร้อนๆ',v:'hot'},
+     {i:'🌙',e:'🪑',kind:'emoji',obj:'rest',tag:'จุดนั่งพัก',l:'นั่งเฉยๆ รอเช้า',s:'อาหารเย็น / ดิบ',v:'cold'}]},
+ {id:'chest',text:'เจอหีบสมบัติ 2 ใบ! เดินไปเปิดสักใบสิ',
+  scene:{kind:'cave',indoor:true,top:'#4a3b2a',bot:'#7a5c3a',gnd:['#6b5236','#46341f'],decor:[['💎',60,200,26],['✨',740,210,24],['🕸️',30,30,34]]},
+  c:[{i:'📿',kind:'chest',obj:'chestA',col:'#c98a2b',mystery:true,l:'เจอสร้อยคอทองคำ!',s:'อาหารเส้น',v:'noodle'},
+     {i:'💎',kind:'chest',obj:'chestB',col:'#8a5bd6',mystery:true,l:'เจออัญมณีและเพชรพลอย!',s:'อาหารข้าว',v:'rice'}]},
+ {id:'river',text:'แม่น้ำขวางทางอยู่! จะข้ามไปยังไงดี?',
+  scene:{kind:'river',top:'#cdeeff',bot:'#eaf9ff',gnd:['#bfe8b0','#8ccf8a'],decor:[['🌴',60,185,70],['🌴',745,190,70],['🪨',390,420,24]]},
+  c:[{i:'🌉',e:'🌉',kind:'emoji',obj:'bridge',tag:'สะพาน',l:'เดินข้ามสะพาน',s:'ชอบจานแห้งๆ',v:'dry'},
+     {i:'🛶',e:'🛶',kind:'emoji',obj:'boat',tag:'เรือ',l:'พายเรือลอยน้ำ',s:'ชอบมีน้ำซุป',v:'soup'}]},
+ {id:'market',text:'ผ่านตลาดนัดลึกลับ มีสองร้านให้เดินเข้าไป',
+  scene:{kind:'market',top:'#ffe3b8',bot:'#fff3dc',gnd:['#f3d9a8','#d9b97c'],decor:[['🎪',90,185,80],['🎪',715,185,80],['🎈',400,130,30],['🎈',330,150,24]]},
+  c:[{i:'🍡',e:'🍡',kind:'emoji',obj:'shopSmall',tag:'ร้านขนมจุกจิก',l:'ร้านขนมจุกจิก',s:'ชิมนิดๆ พอดีคำ',v:'small'},
+     {i:'🍖',e:'🍖',kind:'emoji',obj:'shopBig',tag:'ร้านจานยักษ์',l:'ร้านจานยักษ์',s:'อิ่มจุใจเต็มที่',v:'big'}]},
+ {id:'light',text:'หมอกลงหนา เห็นแสงไฟสองดวงอยู่ไกลๆ จะเดินไปทางไหน?',
+  scene:{kind:'fog',top:'#cfd8e6',bot:'#eef2f7',gnd:['#aab8a8','#8a9a8a'],decor:[['🌫️',120,160,60],['🌫️',650,190,60]]},
+  c:[{i:'🏮',e:'🏮',kind:'emoji',obj:'lampWarm',tag:'ไฟสีส้มอบอุ่น',glow:'#ff9a3c',l:'ไฟสีส้มอบอุ่น',s:'เมนูคุ้นเคย กินแล้วสบายใจ',v:'comfort'},
+     {i:'🔷',e:'🔷',kind:'emoji',obj:'lampCool',tag:'ไฟสีฟ้าสดชื่น',glow:'#38d0f0',l:'ไฟสีฟ้าสดชื่น',s:'เมนูสดใส ไม่เหมือนใคร',v:'fresh'}]}
+];
+const QMAX={novel:3,door:4,night:2,chest:3,river:2,market:2,light:2};
+
+// n, emoji, tastes, temp, carb, novelty, soup, spice 0-4, ingredients(has), flags(c=comfort,b=big), desc
+const D=(n,e,tastes,temp,carb,nov,soup,spice,has,fl,desc)=>({n,e,tastes,temp,carb,nov,soup,spice,has,comfort:fl.includes('c'),big:fl.includes('b'),desc});
+const DISHES=[
+ D('ผัดกะเพราหมูสับไข่ดาว','🍳',['spicy'],'hot','rice','classic',false,3,['pork','meat','egg'],'cb','หอมใบกะเพรา เผ็ดจัดจ้าน ไข่ดาวกรอบๆ ราดข้าวสวยร้อนๆ'),
+ D('ต้มยำกุ้งน้ำข้น','🍲',['spicy','seafood'],'hot','other','classic',true,3,['shellfish','seafood'],'c','เปรี้ยวเผ็ดซ่า หอมตะไคร้ใบมะกรูด กุ้งตัวโตๆ'),
+ D('ส้มตำไทยไก่ย่าง','🥗',['spicy'],'cold','other','classic',false,3,['peanut','shellfish','meat','chicken'],'b','กรอบสดเปรี้ยวหวานเผ็ด คู่ไก่ย่างหอมๆ'),
+ D('ผัดไทยกุ้งสด','🍤',['seafood'],'hot','noodle','classic',false,1,['peanut','egg','shellfish'],'b','เส้นจันท์เหนียวนุ่ม กุ้งสด ถั่วงอกกรุบกรอบ'),
+ D('ก๋วยเตี๋ยวเรือหมู','🍜',[],'hot','noodle','classic',true,1,['pork','meat'],'c','น้ำซุปเข้มข้น เส้นเล็กนุ่มๆ ซดคล่องคอ'),
+ D('ข้าวมันไก่ต้ม','🍗',[],'hot','rice','classic',true,0,['meat','chicken'],'c','ข้าวมันหอมๆ ไก่นุ่ม พร้อมน้ำซุปใส'),
+ D('สลัดอกไก่ย่าง','🥙',['clean'],'cold','other','new',false,0,['meat','chicken'],'','ผักสดกรอบ อกไก่ย่างนุ่ม น้ำสลัดงาญี่ปุ่น'),
+ D('สลัดโรลเวียดนาม','🌯',['clean'],'cold','noodle','new',false,0,['peanut'],'','แผ่นแป้งใสห่อผักสดกับเส้นหมี่ จิ้มซอสถั่ว'),
+ D('ซูชิแซลมอนสด','🍣',['seafood'],'cold','rice','new',false,0,['seafood'],'','แซลมอนหวานมันละลายในปาก ข้าวซูชิกำลังดี'),
+ D('ข้าวหน้าเนื้อกิวด้ง','🥩',[],'hot','rice','new',false,0,['beef','meat'],'b','เนื้อวัวสไลซ์ราดซอสหวานญี่ปุ่น ข้าวร้อนๆ'),
+ D('ราเมนทงคตสึ','🍜',[],'hot','noodle','new',true,1,['pork','meat','egg','gluten'],'cb','น้ำซุปกระดูกหมูข้นๆ เส้นเหนียวนุ่ม ไข่ยางมะตูม'),
+ D('ข้าวผัดปู','🦀',['seafood'],'hot','rice','classic',false,0,['shellfish','egg'],'c','ข้าวผัดร้อนๆ เนื้อปูแน่นๆ กินกับพริกน้ำปลา'),
+ D('ปลากะพงนึ่งมะนาว','🐟',['seafood','spicy'],'hot','other','classic',true,3,['seafood'],'','ปลากะพงนึ่งนุ่มๆ ราดน้ำจิ้มซีฟู้ดเปรี้ยวเผ็ด'),
+ D('ผัดขี้เมาทะเล','🍝',['spicy','seafood'],'hot','noodle','classic',false,4,['shellfish','seafood'],'b','เส้นใหญ่ผัดไฟแรง ทะเลสดๆ เผ็ดร้อนสะใจ'),
+ D('ข้าวผัดผักรวมเจ','🥦',['clean'],'hot','rice','classic',false,0,[],'','ข้าวผัดหอมกระทะ ผักหลากสี เบาท้อง'),
+ D('ต้มจืดเต้าหู้หมูสับ','🥣',['clean'],'hot','other','classic',true,0,['pork','meat'],'c','ซุปใสอุ่นๆ กลมกล่อม กินแล้วสบายใจ'),
+ D('แกงเขียวหวานไก่','🍛',['spicy'],'hot','rice','classic',true,2,['meat','chicken'],'cb','แกงกะทิหอมมัน เผ็ดละมุน กินกับข้าวสวยหรือขนมจีน'),
+ D('ข้าวเหนียวมะม่วง','🥭',['sweet'],'cold','other','classic',false,0,[],'c','มะม่วงสุกหวานฉ่ำ ข้าวเหนียวมูนราดกะทิหอมๆ'),
+ D('บิงซูสตรอว์เบอร์รี','🍧',['sweet'],'cold','other','new',false,0,['milk'],'','น้ำแข็งนมเกล็ดละเอียดเนียนๆ ท็อปสตรอว์เบอร์รีสด'),
+ D('แพนเค้กญี่ปุ่นฟลัฟฟี่','🥞',['sweet'],'hot','other','new',false,0,['egg','milk','gluten'],'','นุ่มฟูเหมือนก้อนเมฆ ราดเมเปิลซิรัปหอมๆ'),
+ D('ไอติมกะทิขนมปัง','🍨',['sweet'],'cold','other','classic',false,0,['peanut','gluten'],'c','ไอติมกะทิหอมมัน โรยถั่วคั่ว เย็นชื่นใจ'),
+ D('ทาโกยากิร้อนๆ','🐙',['seafood'],'hot','other','new',false,0,['seafood','egg','gluten'],'','แป้งนอกกรอบในนุ่ม หมึกชิ้นโต ซอสหอมๆ'),
+ D('ข้าวไข่เจียวหมูสับ','🍳',[],'hot','rice','classic',false,0,['egg','pork','meat'],'cb','เมนูบ้านๆ ไข่ฟูกรอบ ราดข้าวสวยร้อนๆ'),
+ D('ผัดซีอิ๊วหมู','🍝',[],'hot','noodle','classic',false,0,['pork','meat','egg','gluten'],'cb','เส้นใหญ่ผัดไหม้ๆ หอมกระทะ ผักคะน้ากรอบ'),
+ D('ยำวุ้นเส้นทะเล','🥗',['spicy','seafood'],'cold','noodle','classic',false,3,['shellfish','seafood'],'','เปรี้ยวเผ็ดแซ่บ กุ้งหมึกสด วุ้นเส้นเด้งๆ'),
+ D('ข้าวผัดกิมจิ','🍚',['spicy'],'hot','rice','new',false,2,['egg','pork','meat'],'b','เปรี้ยวเผ็ดสไตล์เกาหลี ไข่ดาวไข่แดงเยิ้ม'),
+ D('ซุปเห็ดรวมเจ','🍄',['clean'],'hot','other','new',true,0,[],'c','ซุปเห็ดหลากชนิด หอมกลิ่นเห็ด อุ่นท้อง'),
+ D('ข้าวแซลมอนย่างซีอิ๊ว','🍱',['seafood','clean'],'hot','rice','new',false,0,['seafood'],'','แซลมอนย่างฉ่ำๆ เสิร์ฟกับผักดองและข้าวญี่ปุ่น')
+];
+
+/* ================== ALLERGY TEXT PARSER ==================
+   รับข้อความอิสระ (ไทย/อังกฤษ) → ส่วนผสมที่ต้องเลี่ยง (tags) + คำค้นเพิ่มเติม (terms)
+   ถ้าเจอคำที่รู้จัก (เช่น "แพ้ถั่ว", "ไม่กินเนื้อวัว", "ฮาลาล") จะตัดเมนูที่มีส่วนผสมนั้นออก
+   คำที่ไม่รู้จัก (เช่น "เห็ด", "มะม่วง") จะตัดเมนูที่มีคำนั้นอยู่ในชื่อ/คำอธิบาย
+   คำที่มีนำหน้าว่า "ไม่แพ้ / กินได้ / ไม่มี" จะถูกข้าม                                    */
+const ALG_RULES=[
+ {re:/มังสวิรัติ|vegetarian|เนื้อสัตว์|กินเจ|(?:^|[\s,;])เจ(?=$|[\s,;])|\bveg\b/gi, ex:['meat','chicken','pork','beef','seafood','shellfish']},
+ {re:/วีแกน|vegan/gi, ex:['meat','chicken','pork','beef','seafood','shellfish','milk','egg']},
+ {re:/นมวัว|นม|dairy|milk|lactose|แลคโตส|แล็กโทส|ชีส|cheese|เนย/gi, ex:['milk']},
+ {re:/เนื้อวัว|วัว|beef|เนื้อ(?!สัตว์|หมู|ไก่|ปลา|ทะเล|กุ้ง)/gi, ex:['beef']},
+ {re:/หมู|pork|ham\b|bacon|ฮาลาล|halal|มุสลิม|อิสลาม|muslim/gi, ex:['pork']},
+ {re:/ไก่|chicken/gi, ex:['chicken']},
+ {re:/อาหารทะเล|ซีฟู้ด|seafood|สัตว์น้ำ|ทะเล|ปลาหมึก|หมึก|squid|octopus/gi, ex:['seafood','shellfish']},
+ {re:/กุ้ง|หอย|ปู|shrimp|prawn|crab|shellfish|lobster|oyster/gi, ex:['shellfish']},
+ {re:/ปลา|fish|salmon|แซลมอน|tuna|ทูน่า/gi, ex:['seafood']},
+ {re:/ถั่ว|peanut|\bnuts?\b|almond|cashew|อัลมอนด์|เม็ดมะม่วง/gi, ex:['peanut']},
+ {re:/ไข่|egg/gi, ex:['egg']},
+ {re:/กลูเตน|gluten|แป้งสาลี|wheat|ข้าวสาลี|ซีลิแอค|celiac|coeliac/gi, ex:['gluten']}
+];
+const NEG_BEFORE=/ไม่แพ้|กินได้|ทานได้|ไม่มีปัญหา|ไม่เกี่ยง|not allergic|no allergy|no allergies|ok with/i;
+function parseAllergy(text){
+  const ex=new Set(),terms=[];
+  let txt=' '+String(text||'').toLowerCase()+' ';
+  ALG_RULES.forEach(rule=>{
+    rule.re.lastIndex=0;let m;const hits=[];
+    while((m=rule.re.exec(txt))){
+      if(m[0].length===0){rule.re.lastIndex++;continue}
+      const before=txt.slice(Math.max(0,m.index-12),m.index);
+      if(!NEG_BEFORE.test(before))rule.ex.forEach(t=>ex.add(t));
+      hits.push([m.index,m[0].length]);
+    }
+    hits.forEach(([i,l])=>{txt=txt.slice(0,i)+' '.repeat(l)+txt.slice(i+l)});   // กันจับซ้ำ
+  });
+  txt.split(/[,，;；\n\/、]+|และ|\band\b|&/).forEach(ch=>{
+    if(NEG_BEFORE.test(ch)||/ไม่มี|ไม่แพ้|ทุกอย่าง|ได้หมด|\bnone\b|n\/a/i.test(ch))return;
+    const t=ch.replace(/แพ้|ไม่กิน|ไม่ทาน|ไม่ชอบ|ห้ามกิน|ห้าม|งด|เลี่ยง|allergic to|allergy to|allergy|don'?t eat|\bno\b|อาหาร|พวก|ประเภท|เมนู|ส่วนผสม|ค่ะ|ครับ|คะ|นะ|ด้วย|หน่อย/g,'').trim();
+    if(t.length>=2&&!/^[-–_.]+$/.test(t))terms.push(t);
+  });
+  return {ex,terms};
+}
+
+/* ================== STATE ================== */
+const S={screen:'start',theme:'normal',char:'bunny',name:'',allergyText:'',spicy:2,mood:null,qs:[],qi:0,answers:{},layout:{},
+  sound:true,tts:false,result:null,took:null,lock:false,hintShown:false};
+try{const p=JSON.parse(localStorage.getItem('immpress')||'{}');
+  if(THEMES[p.theme])S.theme=p.theme; if(CH[p.char])S.char=p.char;
+  if(typeof p.sound==='boolean')S.sound=p.sound; if(typeof p.tts==='boolean')S.tts=p.tts;}catch(e){}
+const save=()=>{try{localStorage.setItem('immpress',JSON.stringify({theme:S.theme,char:S.char,sound:S.sound,tts:S.tts}))}catch(e){}};
+
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* ================== AUDIO / TTS ================== */
+let ac;
+function beep(f=660,d=.09,t='square'){
+  if(!S.sound)return;
+  try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();
+    const o=ac.createOscillator(),g=ac.createGain();o.type=t;o.frequency.value=f;g.gain.value=.05;
+    o.connect(g);g.connect(ac.destination);o.start();g.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+d);o.stop(ac.currentTime+d);}catch(e){}
+}
+const sfxOk=()=>{beep(660);setTimeout(()=>beep(990),80)};
+const sfxTap=()=>beep(520,.06);
+const sfxWin=()=>[523,659,784,1046].forEach((f,i)=>setTimeout(()=>beep(f,.15,'triangle'),i*110));
+function speak(t){
+  if(!('speechSynthesis' in window)||!t)return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(t);u.lang='th-TH';u.rate=.95;speechSynthesis.speak(u);
+}
+
+/* ================== THEME / DECO ================== */
+function buildDeco(){
+  const t=THEMES[S.theme],box=$('#deco');box.innerHTML='';
+  for(let i=0;i<16;i++){
+    const s=document.createElement('span');
+    s.textContent=t.deco[i%t.deco.length];
+    if(t.fall)s.className='fall';
+    s.style.left=Math.random()*100+'%';
+    s.style.fontSize=(1+Math.random()*1.6)+'rem';
+    s.style.animationDuration=(14+Math.random()*16)+'s';
+    s.style.animationDelay=(-Math.random()*20)+'s';
+    box.appendChild(s);
+  }
+  $('#mq1').textContent=$('#mq2').textContent=t.m;
+}
+function setTheme(t){
+  S.theme=t;document.body.className='t-'+t;buildDeco();save();
+  render(true);refreshModal();
+}
+
+/* ================== VIEWS ================== */
+const avatar=(c,sm)=>`<span class="avatar ${sm?'sm':''}"><i class="acc">${ACC[S.theme][c]}</i><span>${CH[c].e}</span></span>`;
+const narr=t=>`<div class="narr">${avatar(S.char,true)}<div class="bubble">${t}</div></div>`;
+function charCard(c){
+  return `<div class="card char ${S.char===c?'sel':''}" data-act="char" data-v="${c}">${avatar(c)}<b>${CH[c].n}</b><small>${CH[c].d}</small></div>`;
+}
+function themeBtns(){
+  return Object.keys(THEMES).map(k=>`<button class="btn btn-ghost ${S.theme===k?'active':''}" data-act="theme" data-v="${k}">${THEMES[k].l}</button>`).join('');
+}
+
+const VIEWS={
+ start(){return `<div class="center" data-say="ยินดีต้อนรับสู่ อิ่มเพรส ฟู้ดเควส เกมทายใจ ค้นหาอาหารที่ตรงใจคุณ เลือกตัวละครแล้วกดสตาร์ทได้เลย">
+  <div><span class="logo-sub">🍴 อิ่มเพรส · IMM PRESS 🍴</span></div>
+  <h1 class="logo">FOOD<br>QUEST</h1>
+  <p class="tag">เกมทายใจ ค้นหาเมนูที่ใช่ในทุกอารมณ์</p>
+  <div class="start-row">
+    ${charCard('bunny')}
+    <div class="btn-col">
+      <button class="btn btn-primary big" data-act="start">▶ START</button>
+      <div class="row"><button class="btn btn-ghost" data-act="how">HOW TO PLAY</button><button class="btn btn-ghost" data-act="settings">SETTINGS</button></div>
+      <div class="theme-row">${themeBtns()}</div>
+    </div>
+    ${charCard('cat')}
+  </div></div>`},
+
+ profile(){return `<div class="center" data-say="กรอกชื่อ พิมพ์อาหารที่แพ้หรือข้อจำกัด และเลือกระดับความเผ็ดที่ชอบ">
+  ${narr('ก่อนออกเดินทาง ขอรู้จักคุณหน่อยนะ! 🎒')}
+  <div class="profile">
+   <div class="spicy-box">
+     <div class="lbl">SPICY</div>
+     <div class="chilies">${[1,2,3,4].map(n=>`<button class="chili ${S.spicy>=n?'on':''}" data-act="spicy" data-v="${n}" aria-label="เผ็ดระดับ ${n}">🌶️</button>`).join('')}</div>
+     <button class="chili-x" data-act="spicy" data-v="0" aria-label="ไม่ระบุ">✕</button>
+     <div id="spicyLbl" style="font-size:.75rem;margin-top:.3rem;min-height:2.2em">${SPICY_LBL[S.spicy]}</div>
+   </div>
+   <div class="card" style="padding:.6rem .8rem">
+     <label class="flabel" for="nameIn">👤 ชื่อของคุณ</label>
+     <input id="nameIn" class="field" maxlength="20" placeholder="พิมพ์ชื่อเล่น…" value="${esc(S.name)}" autocomplete="off">
+     <label class="flabel" for="algIn" style="margin-top:.5rem">🚫 แพ้อาหาร / ข้อจำกัด (พิมพ์เองได้เลย)</label>
+     <textarea id="algIn" class="field" rows="3" maxlength="300" placeholder="เช่น แพ้อาหารทะเล, ไม่กินเนื้อวัว, แพ้ถั่ว (เว้นว่างได้ถ้าไม่มี)">${esc(S.allergyText)}</textarea>
+     <p class="fhint">💡 พิมพ์ได้ทั้งไทย/อังกฤษ คั่นหลายอย่างด้วยลูกน้ำ (,) หรือขึ้นบรรทัดใหม่</p>
+     <div class="rbtns">
+       <button class="btn btn-primary" data-act="confirm">✔ Confirm</button>
+       <button class="btn btn-sec" data-act="skip">SKIP</button>
+     </div>
+   </div>
+  </div></div>`},
+
+ mood(){return `<div class="center" data-say="เลือกอารมณ์ของคุณวันนี้ หิวมาก อารมณ์ไม่ดี สดใส หรือแฮปปี้">
+  ${narr(`เลือกอารมณ์ของ${S.name?' คุณ'+esc(S.name):'คุณ'}วันนี้ได้เลย~`)}
+  <div class="moods">${MOODS.map(m=>`<div class="card mood ${S.mood===m.id?'sel':''}" data-act="mood" data-v="${m.id}">
+    <span class="e">${m.e}</span><b>${m.l}</b><small>${m.s}</small><i>${m.n} ข้อ</i></div>`).join('')}</div>
+  <p class="ssub">อารมณ์ดี = คำถามเยอะขึ้น · หิว/อารมณ์เสีย = สั้นๆ เร็วๆ</p></div>`},
+
+ question(){
+  const q=S.qs[S.qi],n=S.qs.length;
+  const say=q.text+' ใช้จอยสติ๊กเดินไปเลือก มีตัวเลือก '+q.c.map(c=>c.tag||c.l).join(' หรือ ');
+  return `<div class="qstage" data-say="${esc(say)}">
+   <canvas id="cv" aria-label="ฉากเกม Stage ${S.qi+1}"></canvas>
+   <div class="hbar"><i style="width:${S.qi/n*100}%"></i></div>
+   <div class="qhud"><span class="badge">STAGE ${S.qi+1}/${n}</span><div class="hbub">${avatar(S.char,true)}<span>${q.text}</span></div></div>
+   <div id="joy" aria-label="จอยสติ๊ก"><div id="knob"></div></div>
+   <button id="act" class="btn btn-primary" hidden>✋</button>
+   <div id="reveal" hidden></div>
+   ${S.hintShown?'':'<div class="toast">🕹️ ลากจอยสติ๊ก / ปุ่มลูกศร / WASD เดินไปหาตัวเลือก · Space = เลือก</div>'}
+  </div>`},
+
+ loading(){return `<div class="center" data-say="กำลังเดินไปทางออก">
+  <div class="runner">${CH[S.char].e}💨</div>
+  <div class="stitle">กำลังเดินไปทางออก…</div>
+  <div class="ssub">มีใครบางคนรออยู่ตรงนั้นนะ 👀</div></div>`},
+
+ result(){
+  const r=S.result,d=r.top,nm=esc(S.name||'นักกิน');
+  const spice=d.spice?'🌶️'.repeat(d.spice):'ไม่เผ็ด';
+  const say=`ยินดีด้วย ${S.name||'นักกิน'} แม่รออยู่ที่ทางออก เมนูของคุณคือ ${d.n} ${d.desc}`;
+  return `<div class="result" data-say="${esc(say)}">
+   <div class="card exit">
+     <span class="door">🚪</span><span class="sign">EXIT</span>
+     <div class="mom">👩‍🍳</div>
+     <div class="bubble" style="font-size:.85rem">${nm} ลูกรัก! แม่รออยู่ตรงนี้แล้วนะ แม่เตรียม <b>${esc(d.n)}</b> ไว้ให้ 💕</div>
+   </div>
+   <div class="card" style="padding:.6rem .8rem;display:flex;flex-direction:column;justify-content:center">
+     <div class="plate">${d.e}</div>
+     <div class="stitle" style="color:var(--ink);margin-top:.3rem">${esc(d.n)}</div>
+     <div class="ssub">${esc(d.desc)}</div>
+     <div class="tags">
+       <span class="tag-pill y">ตรงใจ ${r.pct}%</span>
+       <span class="tag-pill">${spice}</span>
+       <span class="tag-pill">${d.temp==='hot'?'🔥 ร้อน':'🧊 เย็น'}</span>
+       <span class="tag-pill">${d.carb==='noodle'?'🍜 เส้น':d.carb==='rice'?'🍚 ข้าว':'🍽️ จานพิเศษ'}</span>
+       <span class="tag-pill">${d.nov==='new'?'🌍 เมนูใหม่':'🇹🇭 เมนูคลาสสิก'}</span>
+     </div>
+     ${r.avoid?`<div class="alt">🚫 หลีกเลี่ยงให้แล้ว: <b>${esc(r.avoid)}</b></div>
+       <div class="alt" style="font-size:.68rem;opacity:.7">⚠️ ${r.warn?'ไม่มีเมนูที่ตรงเงื่อนไขทั้งหมด จึงเลือกที่ใกล้เคียงที่สุด — ':''}เป็นการคัดกรองตามเมนูในเกมเท่านั้น หากแพ้จริงโปรดแจ้งทางร้านก่อนสั่งทุกครั้ง</div>`:''}
+     ${r.alts.length?`<div class="alt" style="margin-top:.2rem">ตัวสำรอง: ${r.alts.map(a=>a.e+' '+esc(a.n)).join(' · ')}</div>`:''}
+     <div class="rbtns">
+       <button class="btn btn-primary" data-act="take">🛍️ Take Home (ซื้อกลับบ้าน)</button>
+       <button class="btn btn-sec" data-act="dine">🍽️ Dine in (ทานที่ร้าน)</button>
+     </div>
+     <div class="msg" id="rmsg">${msgFor()}</div>
+     <div class="rbtns"><button class="btn btn-ghost" data-act="again">🔁 เล่นอีกครั้ง</button><button class="btn btn-ghost" data-act="home">🏠 หน้าแรก</button></div>
+   </div></div>`}
+};
+function msgFor(){
+  if(S.took==='take')return '🛍️ แม่จัดใส่ถุงเรียบร้อย! กลับบ้านไปทานกันนะ 🏡';
+  if(S.took==='dine')return '🍽️ แม่จองโต๊ะไว้แล้ว นั่งทานกันตรงนี้เลย! อร่อยนะ 😋';
+  return '';
+}
+
+/* ================== 2D GAME ENGINE (Canvas) ================== */
+const W=800,H=450;
+const KEYMAP={ArrowLeft:'l',a:'l',A:'l',ArrowRight:'r',d:'r',D:'r',ArrowUp:'u',w:'u',W:'u',ArrowDown:'d',s:'d',S:'d'};
+
+function rr(c,x,y,w,h,r){
+  c.beginPath();c.moveTo(x+r,y);c.lineTo(x+w-r,y);c.quadraticCurveTo(x+w,y,x+w,y+r);
+  c.lineTo(x+w,y+h-r);c.quadraticCurveTo(x+w,y+h,x+w-r,y+h);c.lineTo(x+r,y+h);
+  c.quadraticCurveTo(x,y+h,x,y+h-r);c.lineTo(x,y+r);c.quadraticCurveTo(x,y,x+r,y);c.closePath();
+}
+const EMOJI_FONT='"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
+const TEXT_FONT='"Mali","Fredoka",sans-serif';
+
+const Game={
+ tok:0,raf:0,last:0,keys:new Set(),jx:0,jy:0,joyId:null,px:400,py:395,face:1,moving:false,t:0,
+ objs:[],near:null,busy:false,target:null,parts:[],q:null,cv:null,c:null,
+
+ start(){
+  this.stop();const tok=++this.tok;
+  this.q=S.qs[S.qi];this.cv=$('#cv');if(!this.cv)return;
+  const dpr=Math.min(window.devicePixelRatio||1,2);
+  this.cv.width=W*dpr;this.cv.height=H*dpr;
+  this.c=this.cv.getContext('2d');this.c.setTransform(dpr,0,0,dpr,0,0);
+  this.build();
+  this.px=400;this.py=395;this.face=1;this.jx=this.jy=0;this.near=null;this.busy=false;this.target=null;this.t=0;
+  this.initParts();this.bindUI();
+  if(!S.hintShown)setTimeout(()=>{S.hintShown=true},6000);
+  this.last=performance.now();
+  const tick=ts=>{
+    if(tok!==this.tok)return;
+    const dt=Math.min(.05,(ts-this.last)/1000);this.last=ts;
+    this.update(dt);this.draw();this.raf=requestAnimationFrame(tick);
+  };
+  this.raf=requestAnimationFrame(tick);
+ },
+ stop(){this.tok++;cancelAnimationFrame(this.raf);this.keys.clear();this.jx=this.jy=0;this.joyId=null},
+
+ build(){
+  const q=this.q,n=q.c.length;
+  const slots=n===4?[115,305,495,685]:[220,580];
+  let order=S.layout[q.id];
+  if(!order){order=[...Array(n).keys()].sort(()=>Math.random()-.5);S.layout[q.id]=order}
+  this.objs=q.c.map((c,i)=>{
+    const slot=order[i],door=c.kind==='door';
+    return {c,slot,x:slots[slot],y:door?250:262,w:door?96:104,h:door?140:104,
+      tag:q.id==='chest'?'หีบ '+'AB'[slot]:c.tag,open:false,
+      img:q.id==='chest'?(slot===0?'obj.chestA':'obj.chestB'):('obj.'+c.obj)};
+  });
+ },
+ initParts(){
+  this.parts=Array.from({length:14},()=>({x:Math.random()*W,y:Math.random()*H,y0:30+Math.random()*120,s:12+Math.random()*14,v:20+Math.random()*30,ph:Math.random()*6.28}));
+ },
+
+ /* ---------- input ---------- */
+ bindUI(){
+  const joy=$('#joy'),knob=$('#knob'),act=$('#act'),cv=this.cv;
+  const set=e=>{
+    const r=joy.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
+    const max=r.width/2-knob.offsetWidth/2;
+    let dx=e.clientX-cx,dy=e.clientY-cy;const d=Math.hypot(dx,dy);
+    if(d>max){dx*=max/d;dy*=max/d}
+    knob.style.transform=`translate(${dx}px,${dy}px)`;
+    const m=Math.hypot(dx,dy)/max;
+    if(m<.18){this.jx=this.jy=0}else{this.jx=dx/max;this.jy=dy/max}
+  };
+  const end=e=>{
+    if(this.joyId!==e.pointerId)return;
+    this.joyId=null;this.jx=this.jy=0;knob.style.transform='translate(0,0)';
+  };
+  joy.onpointerdown=e=>{e.preventDefault();joy.setPointerCapture(e.pointerId);this.joyId=e.pointerId;set(e)};
+  joy.onpointermove=e=>{if(this.joyId===e.pointerId)set(e)};
+  joy.onpointerup=end;joy.onpointercancel=end;joy.onlostpointercapture=end;
+  act.onclick=()=>this.interact();
+  // แตะบนฉาก = เดินไปที่จุดนั้น / แตะวัตถุที่อยู่ใกล้ = เลือก
+  cv.onpointerdown=e=>{
+    if(this.busy)return;
+    const r=cv.getBoundingClientRect(),s=Math.min(r.width/W,r.height/H);
+    const wx=(e.clientX-r.left-(r.width-W*s)/2)/s,wy=(e.clientY-r.top-(r.height-H*s)/2)/s;
+    const o=this.objs.find(o=>Math.abs(wx-o.x)<o.w/2+12&&Math.abs(wy-o.y)<o.h/2+34);
+    if(o){if(this.near===o)this.choose(o);else this.target={x:o.x,y:o.y+o.h/2+20}}
+    else this.target={x:wx,y:wy};
+  };
+ },
+ interact(){if(!this.busy&&this.near)this.choose(this.near)},
+
+ choose(o){
+  if(this.busy)return;this.busy=true;
+  const tok=this.tok,qi=S.qi,q=this.q;
+  S.answers[q.id]=o.c.v;o.open=true;sfxOk();
+  this.near=null;this.target=null;$('#act').hidden=true;
+  const n=S.qs.length,hb=$('.hbar i');if(hb)hb.style.width=((qi+1)/n*100)+'%';
+  const r=$('#reveal');
+  r.innerHTML=`<div class="card revcard"><span class="ri">${o.c.i}</span><b>${o.c.l}</b><small>${o.c.s}</small></div>`;
+  r.hidden=false;updateControls();
+  setTimeout(()=>{if(tok!==this.tok||S.screen!=='question'||S.qi!==qi)return;nextQ()},1300);
+ },
+
+ /* ---------- update ---------- */
+ update(dt){
+  this.t+=dt;
+  let ix=this.jx,iy=this.jy;
+  if(this.keys.has('l'))ix-=1;if(this.keys.has('r'))ix+=1;
+  if(this.keys.has('u'))iy-=1;if(this.keys.has('d'))iy+=1;
+  let m=Math.hypot(ix,iy);
+  if(m>1){ix/=m;iy/=m;m=1}
+  if(this.busy){ix=iy=0;m=0}
+  if(m>.12){this.target=null}
+  else if(this.target){
+    const dx=this.target.x-this.px,dy=this.target.y-this.py,d=Math.hypot(dx,dy);
+    if(d<6)this.target=null;else{ix=dx/d;iy=dy/d;m=1}
+  }else{ix=iy=0;m=0}
+  this.moving=m>.05;
+  this.px=Math.max(34,Math.min(W-34,this.px+ix*PLAYER_SPEED*dt));
+  this.py=Math.max(165,Math.min(H-22,this.py+iy*PLAYER_SPEED*dt*.85));
+  if(Math.abs(ix)>.1)this.face=ix>0?1:-1;
+  // collision / proximity
+  if(!this.busy){
+    let best=null,bd=1e9;
+    this.objs.forEach(o=>{
+      if(Math.abs(this.px-o.x)<o.w/2+32&&this.py>o.y-o.h/2-10&&this.py<o.y+o.h/2+40){
+        const d=Math.hypot(this.px-o.x,this.py-o.y);if(d<bd){bd=d;best=o}
+      }
+    });
+    if(best!==this.near){
+      this.near=best;const a=$('#act');
+      if(a){a.hidden=!best;if(best)a.textContent='✋ เลือก "'+best.tag+'"'}
+      if(best)beep(780,.05);
+    }
+  }
+  // particles
+  const th=S.theme;
+  this.parts.forEach(p=>{
+    if(th==='normal'){p.y-=p.v*dt;p.x+=Math.sin(this.t+p.ph)*8*dt;if(p.y<-20)p.y=H+10}
+    else if(th==='halloween'){p.x+=p.v*2*dt;p.y=p.y0+Math.sin(this.t*2+p.ph)*14;if(p.x>W+30)p.x=-30}
+    else{p.y+=p.v*dt;p.x+=Math.sin(this.t+p.ph)*10*dt;if(p.y>H+10)p.y=-10}
+  });
+ },
+
+ /* ---------- draw ---------- */
+ draw(){
+  const c=this.c,t=this.t;
+  c.clearRect(0,0,W,H);
+  this.drawBg();
+  // objects + player sorted by feet y (วัตถุอยู่หลังตัวละครถ้าตัวละครเดินอยู่ด้านหน้า)
+  const items=this.objs.map(o=>({y:o.y+o.h/2,fn:()=>this.drawObj(o)}));
+  items.push({y:this.py,fn:()=>this.drawPlayer()});
+  items.sort((a,b)=>a.y-b.y).forEach(i=>i.fn());
+  if(this.q.scene.kind==='fog'&&!getImg('stage.light')){
+    c.fillStyle='rgba(255,255,255,.28)';c.fillRect(0,0,W,H);
+    for(let i=0;i<4;i++){c.fillStyle='rgba(255,255,255,.22)';c.beginPath();c.ellipse(((t*18+i*230)%1000)-100,200+i*60,150,28,0,0,6.3);c.fill()}
+  }
+  if(SHOW_PARTICLES){
+    const em=S.theme==='normal'?'✨':S.theme==='halloween'?'🦇':'❄️';
+    c.globalAlpha=.85;c.textAlign='center';c.textBaseline='middle';
+    this.parts.forEach(p=>{c.font=`${p.s}px ${EMOJI_FONT}`;c.fillText(em,p.x,p.y)});
+    c.globalAlpha=1;
+  }
+ },
+ drawBg(){
+  const c=this.c,q=this.q,sc=q.scene,th=S.theme,t=this.t;
+  const bg=getImg('stage.'+q.id)||getImg('bg.'+th);
+  if(bg){
+    const s=Math.max(W/bg.width,H/bg.height),w=bg.width*s,h=bg.height*s;
+    c.drawImage(bg,(W-w)/2,(H-h)/2,w,h);return;
+  }
+  let g=c.createLinearGradient(0,0,0,170);g.addColorStop(0,sc.top);g.addColorStop(1,sc.bot);
+  c.fillStyle=g;c.fillRect(0,0,W,H);
+  if(sc.kind==='hall'||sc.kind==='cave'){
+    c.strokeStyle='rgba(0,0,0,.08)';c.lineWidth=2;
+    for(let y=0;y<160;y+=28){c.beginPath();c.moveTo(0,y);c.lineTo(W,y);c.stroke();
+      for(let x=(y/28%2)*30;x<W;x+=60){c.beginPath();c.moveTo(x,y);c.lineTo(x,y+28);c.stroke()}}
+  }
+  let gnd=sc.gnd;if(!sc.indoor&&GROUND[th])gnd=GROUND[th];
+  g=c.createLinearGradient(0,160,0,H);g.addColorStop(0,gnd[0]);g.addColorStop(1,gnd[1]);
+  c.fillStyle=g;c.fillRect(0,160,W,H-160);
+  c.fillStyle='rgba(0,0,0,.1)';c.fillRect(0,158,W,4);
+  if(sc.kind==='hall'){c.strokeStyle='rgba(120,70,20,.15)';c.lineWidth=2;for(let x=0;x<W;x+=70){c.beginPath();c.moveTo(x,162);c.lineTo(x,H);c.stroke()}}
+  if(sc.kind==='river'){
+    g=c.createLinearGradient(0,205,0,305);g.addColorStop(0,'#6fcbff');g.addColorStop(1,'#2f8fdc');
+    c.fillStyle=g;c.fillRect(0,205,W,100);
+    c.strokeStyle='rgba(255,255,255,.55)';c.lineWidth=2;
+    for(let r=0;r<3;r++){c.beginPath();for(let x=0;x<=W;x+=10){const y=225+r*28+Math.sin(x/28+t*2+r)*4;x?c.lineTo(x,y):c.moveTo(x,y)}c.stroke()}
+  }
+  if(sc.kind==='night'){
+    c.fillStyle='#fff';
+    for(let i=0;i<40;i++){c.globalAlpha=.4+.6*Math.abs(Math.sin(t*1.5+i));c.fillRect((i*137.5)%W,(i*53.7)%140,2,2)}
+    c.globalAlpha=1;c.fillStyle='#ffe9a8';c.beginPath();c.arc(690,60,24,0,6.3);c.fill();
+  }
+  c.textAlign='center';c.textBaseline='middle';
+  sc.decor.forEach(([e,x,y,s])=>{c.font=`${s}px ${EMOJI_FONT}`;c.fillText(e,x,y)});
+  if(th==='halloween'){
+    c.fillStyle='rgba(40,15,80,.28)';c.fillRect(0,0,W,H);
+    if(sc.kind!=='night'){c.fillStyle='#ffe9a8';c.shadowColor='#ffd36b';c.shadowBlur=24;c.beginPath();c.arc(710,62,24,0,6.3);c.fill();c.shadowBlur=0}
+  }else if(th==='christmas'){
+    const cols=['#ef4444','#22c55e','#facc15','#60a5fa'];
+    for(let i=0;i<21;i++){
+      const x=i*40+10,y=14+Math.sin(i*.8)*6;
+      c.globalAlpha=.55+.45*Math.sin(t*3+i);c.fillStyle=cols[i%4];c.beginPath();c.arc(x,y,5,0,6.3);c.fill();
+    }
+    c.globalAlpha=1;
+  }
+ },
+ drawObj(o){
+  const c=this.c,near=this.near===o,t=this.t,pulse=near?1.06+.03*Math.sin(t*8):1;
+  const img=getImg(o.img),isDoor=o.c.kind==='door';
+  c.save();c.translate(o.x,o.y+o.h/2);c.scale(pulse,pulse);c.translate(0,-o.h/2);
+  // shadow
+  c.fillStyle='rgba(0,0,0,.18)';c.beginPath();c.ellipse(0,o.h/2,o.w*.5,10,0,0,6.3);c.fill();
+  // glow
+  const gl=o.c.glow||(near?'#ffffff':null);
+  if(gl){
+    const r=o.w*.9*(1+.06*Math.sin(t*6));const g=c.createRadialGradient(0,0,4,0,0,r);
+    g.addColorStop(0,gl+'aa');g.addColorStop(1,gl+'00');c.fillStyle=g;c.beginPath();c.arc(0,0,r,0,6.3);c.fill();
+  }
+  if(isDoor){
+    const dimg=getImg('door.'+o.c.doorKey);
+    if(dimg)c.drawImage(dimg,-48,-70,96,140);
+    else{
+      const x=-48,y=-70;
+      c.beginPath();c.moveTo(x,y+140);c.lineTo(x,y+48);c.arc(0,y+48,48,Math.PI,0);c.lineTo(x+96,y+140);c.closePath();
+      c.fillStyle=o.c.col;c.fill();c.lineWidth=4;c.strokeStyle='#3b2a86';c.stroke();
+      c.beginPath();c.moveTo(x+14,y+130);c.lineTo(x+14,y+50);c.arc(0,y+50,34,Math.PI,0);c.lineTo(x+82,y+130);c.closePath();
+      c.fillStyle='rgba(255,255,255,.22)';c.fill();c.lineWidth=2;c.strokeStyle='rgba(0,0,0,.25)';c.stroke();
+      c.fillStyle='#ffd84a';c.strokeStyle='#3b2a86';c.lineWidth=2;c.beginPath();c.arc(x+78,y+92,6,0,6.3);c.fill();c.stroke();
+    }
+  }else if(o.c.kind==='chest'){
+    if(img)c.drawImage(img,-52,-52,104,104);
+    else this.drawChest(o);
+  }else{
+    if(img)c.drawImage(img,-52,-52,104,104);
+    else{c.textAlign='center';c.textBaseline='middle';c.font=`70px ${EMOJI_FONT}`;c.fillText(o.c.e||o.c.i,0,0)}
+  }
+  c.restore();
+  if(near){ // วงแหวนเรืองแสงที่พื้น
+    c.strokeStyle='#ffd84a';c.lineWidth=3;c.globalAlpha=.6+.4*Math.sin(t*8);
+    c.beginPath();c.ellipse(o.x,o.y+o.h/2,o.w*.62,13,0,0,6.3);c.stroke();c.globalAlpha=1;
+  }
+  // label
+  const hint=o.c.mystery?'':o.c.s,ly=o.y+o.h/2+14;
+  c.textAlign='center';c.textBaseline='middle';
+  c.font=`700 15px ${TEXT_FONT}`;let tw=c.measureText(o.tag).width;
+  c.font=`600 11px ${TEXT_FONT}`;const hw=hint?c.measureText(hint).width:0;
+  const bw=Math.max(tw,hw)+22,bh=hint?38:24;
+  rr(c,o.x-bw/2,ly-12,bw,bh,10);c.fillStyle='rgba(255,255,255,.93)';c.fill();c.lineWidth=3;c.strokeStyle='#3b2a86';c.stroke();
+  c.fillStyle='#3b2a86';c.font=`700 15px ${TEXT_FONT}`;c.fillText(o.tag,o.x,ly);
+  if(hint){c.font=`600 11px ${TEXT_FONT}`;c.fillStyle='#6b5bb0';c.fillText(hint,o.x,ly+16)}
+ },
+ drawChest(o){
+  const c=this.c,col=o.c.col;
+  c.lineWidth=4;c.strokeStyle='#3b2a86';
+  rr(c,-46,-6,92,48,8);c.fillStyle=col;c.fill();c.stroke();
+  c.fillStyle='rgba(0,0,0,.2)';c.fillRect(-46,22,92,6);
+  c.save();
+  if(o.open){c.translate(-40,-4);c.rotate(-.9);c.translate(40,4)}
+  c.beginPath();c.moveTo(-46,-6);c.quadraticCurveTo(0,-62,46,-6);c.closePath();
+  c.fillStyle=col;c.fill();c.stroke();
+  c.fillStyle='rgba(255,255,255,.25)';c.beginPath();c.moveTo(-30,-12);c.quadraticCurveTo(0,-44,30,-12);c.closePath();c.fill();
+  c.restore();
+  c.fillStyle='#ffd84a';c.strokeStyle='#3b2a86';c.lineWidth=3;
+  rr(c,-8,-8,16,20,4);c.fill();c.stroke();
+  if(o.open){c.textAlign='center';c.textBaseline='middle';c.font=`34px ${EMOJI_FONT}`;c.fillText('✨',0,-30)}
+ },
+ drawPlayer(){
+  const c=this.c,t=this.t,ch=S.char;
+  c.save();c.translate(this.px,this.py);
+  c.fillStyle='rgba(0,0,0,.2)';c.beginPath();c.ellipse(0,0,24,8,0,0,6.3);c.fill();
+  const bob=this.moving?Math.abs(Math.sin(t*12))*-6:Math.sin(t*3)*-1.5;
+  c.translate(0,bob);c.scale(this.face,1);
+  const img=getImg('char.'+ch),sz=characterSpriteSize;
+  if(img){
+    const fr=Math.max(1,characterSpriteFrames),sw=img.width/fr,f=this.moving&&fr>1?Math.floor(t*10)%fr:0;
+    const sh=img.height*(sz/sw);
+    c.drawImage(img,f*sw,0,sw,img.height,-sz/2,-sh,sz,sh);
+  }else{
+    c.textAlign='center';c.textBaseline='alphabetic';c.font=`${sz*.7}px ${EMOJI_FONT}`;
+    c.fillText(CH[ch].e,0,-4);
+    c.save();c.rotate(-.2);c.font=`${sz*.32}px ${EMOJI_FONT}`;c.fillText(ACC[S.theme][ch],0,-sz*.7);c.restore();
+  }
+  c.restore();
+ }
+};
+
+/* ================== RENDER / NAV ================== */
+function render(quiet){
+  Game.stop();
+  const el=$('#screen');
+  el.classList.toggle('game',S.screen==='question');
+  el.innerHTML=VIEWS[S.screen]();
+  el.dataset.say=(el.firstElementChild&&el.firstElementChild.dataset.say)||'';
+  updateControls();
+  if(S.screen==='question')Game.start();
+  if(S.tts&&!quiet)speak(el.dataset.say);
+}
+function show(name){
+  if(S.lock)return;S.lock=true;
+  const el=$('#screen');el.classList.add('out');
+  setTimeout(()=>{
+    S.screen=name;render();
+    el.classList.remove('out','in');void el.offsetWidth;el.classList.add('in');el.scrollTop=0;
+    S.lock=false;
+    if(name==='result'){burst();sfxWin()}
+  },190);
+}
+function canBack(){return !['start','loading'].includes(S.screen)}
+function canFwd(){
+  if(S.screen==='profile')return true;
+  if(S.screen==='mood')return !!S.mood;
+  if(S.screen==='question')return S.answers[S.qs[S.qi].id]!==undefined;
+  return false;
+}
+function updateControls(){
+  $('#bBack').disabled=!canBack();$('#bFwd').disabled=!canFwd();
+  const p=$('#prog');
+  if(S.screen==='question')p.textContent=`STAGE ${S.qi+1} / ${S.qs.length}`;
+  else p.textContent={start:'INSERT COIN 🪙',profile:'PLAYER SETUP',mood:'CHOOSE MOOD',loading:'LOADING…',result:'RESULT ⭐'}[S.screen];
+  $('#bTts').style.opacity=('speechSynthesis' in window)?1:.3;
+}
+function goBack(){
+  if(!canBack()||S.lock)return;sfxTap();
+  if(S.screen==='profile')show('start');
+  else if(S.screen==='mood')show('profile');
+  else if(S.screen==='question'){if(S.qi>0){S.qi--;show('question')}else show('mood')}
+  else if(S.screen==='result'){S.qi=S.qs.length-1;show('question')}
+}
+function goFwd(){
+  if(!canFwd()||S.lock)return;sfxTap();
+  if(S.screen==='profile'){commitProfile(false);show('mood')}
+  else if(S.screen==='mood'){show('question')}
+  else if(S.screen==='question'){nextQ()}
+}
+function nextQ(){
+  if(S.qi<S.qs.length-1){S.qi++;show('question')}
+  else{show('loading');setTimeout(()=>{compute();S.lock=false;show('result')},1900)}
+}
+function commitProfile(skip){
+  if(skip){S.name='';S.allergyText='';S.spicy=2}
+  else{
+    const n=$('#nameIn'),a=$('#algIn');
+    if(n)S.name=n.value.trim();
+    if(a)S.allergyText=a.value.trim();
+  }
+}
+function startMood(id){
+  const m=MOODS.find(x=>x.id===id);
+  S.mood=id;S.qs=Q.slice(0,m.n);S.qi=0;S.answers={};S.layout={};
+}
+
+/* ================== SCORING ================== */
+function compute(){
+  const {ex,terms}=parseAllergy(S.allergyText);
+  const tagBad=d=>ex.size&&d.has.some(h=>ex.has(h));
+  const termBad=d=>{const txt=(d.n+' '+d.desc).toLowerCase();return terms.some(t=>txt.includes(t))};
+  let pool=DISHES.filter(d=>!tagBad(d)&&!termBad(d)),warn=false;
+  if(!pool.length){pool=DISHES.filter(d=>!tagBad(d));warn=true}
+  if(!pool.length)pool=DISHES;
+  const A=S.answers,mood=S.mood,spiceOn=S.spicy>0;
+  const mb={hungry:2,bad:3,bright:0,happy:1.5};
+  let max=mb[mood]+(spiceOn?3:0);
+  S.qs.forEach(q=>max+=QMAX[q.id]);
+  const scored=pool.map(d=>{
+    let s=0;
+    if(A.novel)s+=d.nov===A.novel?3:0;
+    if(A.door)s+=d.tastes.includes(A.door)?4:0;
+    if(A.night)s+=d.temp===A.night?2:0;
+    if(A.chest)s+=d.carb===A.chest?3:0;
+    if(A.river)s+=((A.river==='soup')===d.soup)?2:0;
+    if(A.market)s+=((A.market==='big')===d.big)?2:0;
+    if(A.light)s+=((A.light==='comfort')===d.comfort)?2:0;
+    if(spiceOn){const want=[0,1,2,4][S.spicy-1];s+=Math.max(-3,3-Math.abs(d.spice-want)*1.5)}
+    if(mood==='hungry'&&d.big)s+=2;
+    if(mood==='bad'&&d.comfort)s+=3;
+    if(mood==='happy'&&d.nov==='new')s+=1.5;
+    return {d,s:s+Math.random()*.4};
+  }).sort((a,b)=>b.s-a.s);
+  const pct=Math.round(Math.max(55,Math.min(99,scored[0].s/max*100)));
+  S.result={top:scored[0].d,pct,alts:scored.slice(1,3).map(x=>x.d),avoid:S.allergyText.trim(),warn};
+  S.took=null;
+}
+
+/* ================== EFFECTS ================== */
+function burst(){
+  const em=['🎉','✨','🍴','⭐','🎊','💕'];
+  for(let i=0;i<26;i++){
+    const c=document.createElement('span');c.className='confetti';
+    c.textContent=em[i%em.length];c.style.left=Math.random()*100+'vw';
+    c.style.animationDelay=Math.random()*.8+'s';c.style.fontSize=(1+Math.random())+'.2rem';
+    document.body.appendChild(c);setTimeout(()=>c.remove(),3500);
+  }
+}
+
+/* ================== MODALS ================== */
+let modalKind=null;
+function openModal(kind){modalKind=kind;refreshModal();$('#modal').classList.add('show')}
+function closeModal(){$('#modal').classList.remove('show');modalKind=null}
+function refreshModal(){
+  if(!modalKind)return;
+  const b=$('#mbox');
+  if(modalKind==='how'){
+    b.innerHTML=`<h2>📖 วิธีเล่น</h2><ol style="padding-left:1.2rem;margin:0">
+      <li>เลือกตัวละครนำทางที่ชอบ แล้วกด <b>START</b></li>
+      <li>กรอกชื่อ พิมพ์อาหารที่แพ้/ข้อจำกัดเอง และเลือกระดับความเผ็ด (หรือกด SKIP)</li>
+      <li>เลือกอารมณ์วันนี้ — ยิ่งหิวหรืออารมณ์เสีย ด่านยิ่งสั้น</li>
+      <li>แต่ละด่านเป็นฉากให้ <b>บังคับตัวละครเดิน</b> ไปหาตัวเลือก: ลากจอยสติ๊กมุมซ้ายล่าง (หรือใช้ปุ่มลูกศร / WASD) แล้วกดปุ่ม <b>✋ เลือก</b> ที่มุมขวาล่าง (คีย์บอร์ด: Space / Enter) หรือแตะที่ฉากเพื่อเดินไป</li>
+      <li>รับเมนูที่ "แม่" เตรียมไว้ให้ที่ทางออก แล้วเลือก Take Home หรือ Dine in</li></ol>
+      <p class="ssub" style="margin:.5rem 0 0">💡 ปุ่ม ◀ ▶ ที่ตู้เกมใช้ย้อนกลับ/ไปต่อ ส่วน 🔊 ใช้อ่านออกเสียง</p>
+      <div class="rbtns"><button class="btn btn-primary" data-act="close">เข้าใจแล้ว!</button></div>`;
+  }else{
+    b.innerHTML=`<h2>⚙️ Settings</h2>
+      <div class="tog"><span>🎨 ธีม / เทศกาล</span></div>
+      <div class="theme-row" style="justify-content:flex-start">${themeBtns()}</div>
+      <div class="tog"><span>🔊 เสียงเอฟเฟกต์</span><button class="btn ${S.sound?'btn-primary':'btn-ghost'}" data-act="tsound">${S.sound?'ON':'OFF'}</button></div>
+      <div class="tog"><span>🗣️ อ่านออกเสียงอัตโนมัติ (TTS)</span><button class="btn ${S.tts?'btn-primary':'btn-ghost'}" data-act="ttts">${S.tts?'ON':'OFF'}</button></div>
+      <div class="rbtns"><button class="btn btn-primary" data-act="close">ปิด</button></div>`;
+  }
+}
+
+/* ================== EVENTS ================== */
+document.addEventListener('click',e=>{
+  if(e.target.id==='modal'){closeModal();return}
+  const t=e.target.closest('[data-act]');if(!t)return;
+  const act=t.dataset.act,v=t.dataset.v;
+  switch(act){
+    case 'start':sfxOk();show('profile');break;
+    case 'how':sfxTap();openModal('how');break;
+    case 'settings':sfxTap();openModal('settings');break;
+    case 'close':sfxTap();closeModal();break;
+    case 'theme':sfxOk();setTheme(v);break;
+    case 'tsound':S.sound=!S.sound;save();sfxTap();refreshModal();break;
+    case 'ttts':S.tts=!S.tts;save();refreshModal();if(!S.tts&&'speechSynthesis' in window)speechSynthesis.cancel();break;
+    case 'char':sfxTap();S.char=v;save();render(true);break;
+    case 'spicy':{
+      sfxTap();S.spicy=+v;
+      document.querySelectorAll('.chili').forEach((c,i)=>c.classList.toggle('on',S.spicy>=i+1));
+      $('#spicyLbl').textContent=SPICY_LBL[S.spicy];break;}
+    case 'confirm':sfxOk();commitProfile(false);show('mood');break;
+    case 'skip':sfxTap();commitProfile(true);show('mood');break;
+    case 'mood':{
+      if(S.lock)return;sfxOk();startMood(v);
+      document.querySelectorAll('.mood').forEach(m=>m.classList.toggle('sel',m.dataset.v===v));
+      setTimeout(()=>show('question'),350);break;}
+    case 'take':S.took='take';sfxWin();$('#rmsg').textContent=msgFor();burst();break;
+    case 'dine':S.took='dine';sfxWin();$('#rmsg').textContent=msgFor();burst();break;
+    case 'again':sfxTap();S.mood=null;S.answers={};S.layout={};S.qi=0;show('mood');break;
+    case 'home':sfxTap();S.mood=null;S.answers={};S.layout={};S.qi=0;show('start');break;
+  }
+});
+// เก็บค่าที่พิมพ์ทันที (กันหายตอนเปลี่ยนธีม/ย้อนกลับ)
+document.addEventListener('input',e=>{
+  if(e.target.id==='nameIn')S.name=e.target.value;
+  if(e.target.id==='algIn')S.allergyText=e.target.value;
+});
+$('#bBack').addEventListener('click',goBack);
+$('#bFwd').addEventListener('click',goFwd);
+$('#bTts').addEventListener('click',()=>{sfxTap();speak($('#screen').dataset.say)});
+$('#rotx').addEventListener('click',()=>$('#rot').classList.remove('show'));
+
+document.addEventListener('keydown',e=>{
+  const tag=e.target.tagName;
+  if(tag==='INPUT'||tag==='TEXTAREA')return;
+  if(e.key==='Escape'){closeModal();return}
+  if(modalKind)return;
+  if(S.screen==='question'){
+    if(KEYMAP[e.key]){Game.keys.add(KEYMAP[e.key]);e.preventDefault();return}
+    if(e.key===' '||e.key==='Enter'||e.key==='e'||e.key==='E'){e.preventDefault();Game.interact();return}
+    if(e.key==='PageUp')goBack();
+    return;
+  }
+  if(e.key==='ArrowLeft')goBack();
+  if(e.key==='ArrowRight')goFwd();
+});
+document.addEventListener('keyup',e=>{if(KEYMAP[e.key])Game.keys.delete(KEYMAP[e.key])});
+window.addEventListener('blur',()=>Game.keys.clear());
+
+/* ================== INIT ================== */
+registerAssets();
+document.body.className='t-'+S.theme;
+buildDeco();render(true);
+setTimeout(()=>$('#rot').classList.add('show'),400);
+setTimeout(()=>$('#rot').classList.remove('show'),6000);
+</script>
+</body>
+</html>
